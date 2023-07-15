@@ -44,19 +44,14 @@ class UrlController extends Controller
         $urls = $this->urlRepository->all();
 
         $errors = $this->urlService->validate($request);
-
         if(!empty($errors['message'])) {
             return view('url.index', ['urls' => $urls , 'message' => $errors['message']]);
-          //  return response()->json(['status' => 'fail', 'message' => $errors['message']]);
         }
 
-        var_dump($request->name);
-
         $chars = preg_split("/\//", $request->name, -1, PREG_SPLIT_NO_EMPTY);
-        print_r($chars);
 
-        $url_start = $chars[0].'//'.$chars[1].'/';
-        $this->urlService->getUrl($url_start);
+        $url_host = $chars[0].'//'.$chars[1].'/';
+        $this->urlService->getUrl($url_host);
 
         $id = DB::getPdo()->lastInsertId();
         $url =  $this->urlRepository->getById($id);

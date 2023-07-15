@@ -5,47 +5,47 @@ namespace App\Services;
 use App\Repositories\Interfaces\UrlRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use JetBrains\PhpStorm\ArrayShape;
+
 
 
 class UrlService {
 
-    public static array $letters = ['a','b','c','e'];
-
-
+    public static array $letters = ['a','b','c','d'];
     public UrlRepositoryInterface $urlRepository;
 
     public function __construct(UrlRepositoryInterface $urlRepository){
         $this->urlRepository = $urlRepository;
     }
 
-    public function getUrl(&$url_start = '',&$j = null)
+    public function getUrl($url_host, &$url_start = '',&$j = null)
     {
         if (!empty($j)){
-            $url_start = $url_start.self::$letters[$j-1];
+            $url_start = self::$letters[$j-1];
         }
-        $count = count(self::$letters) -1;
+        $count = count(self::$letters)-1;
 
         for ($i=0; $i<=$count; $i++) {
 
             if (!empty($j)) {
-                $url = $url_start.self::$letters[$i];
+                $url_loc = $url_start.self::$letters[$i];
             } else {
-                $url = $url_start.self::$letters[$i];
+                $url_loc = self::$letters[$i];
             }
+            $url = $url_host.$url_loc;
+
             $url_count = $this->urlRepository->getByName($url)->count();
 
-            if($url_count === 0) {
+            if ($url_count === 0) {
                 $this->urlRepository->insert(array('name' => $url));
                 return ['status' => 'success'];
             }
         }
 
-        if ($count+1 === $j) {
+        if ($count === $j) {
             return ['status' => 'success'];
         }
         $j++;
-        $this->getUrl($url_start,$j);
+        $this->getUrl($url_host,$url_start,$j);
     }
 
     public function validate(Request $request): array
