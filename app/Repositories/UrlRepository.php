@@ -1,24 +1,29 @@
 <?php
 
 namespace App\Repositories;
-use App\Models\News;
-use App\Models\User;
-use App\Repositories\Interfaces\NewsRepositoryInterface;
+use App\Models\Url;
+use App\Repositories\Interfaces\UrlRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
-class NewsRepository implements NewsRepositoryInterface
+class UrlRepository implements UrlRepositoryInterface
 {
     public function all()
     {
-        return News::all();
+        return Url::all();
     }
 
     public function getById($id)
     {
-        return News::find($id);
+        return Url::find($id);
     }
 
-    public function getByUser(User $user)
+    public function getByName(string $name)
     {
-        return News::find($user->id);
+        return Url::where('name', $name)->get();
+    }
+
+    public function insert(array $url)
+    {
+        return  Url::create($url);
     }
 }

@@ -3,28 +3,29 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Board;
-use App\Models\Url;
+use App\Repositories\Interfaces\UrlRepositoryInterface;
+use App\Services\UrlService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UrlController extends Controller
 {
 
-    public static array $arrLetters = ['a','b','c','d'];
+    public UrlRepositoryInterface $urlRepository;
+    public UrlService $urlService;
 
-    public static string $host = 'https://site/';
+    public function __construct(UrlService $urlService, UrlRepositoryInterface $urlRepository)
+    {
+        $this->urlRepository = $urlRepository;
+        $this->urlService = $urlService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        //$urls = Url::all();
-        //
-     //   $boards = Url::with('columns','name')->get();
-      //  return view('board.index')->with('boards', $boards);
-        $urls = Url::all();
-        return view('url.index')->with('urls', $urls);
+        $urls = $this->urlRepository->all();
+        return view('url.index', ['urls' => $urls ]);
     }
 
     /**
@@ -40,25 +41,31 @@ class UrlController extends Controller
      */
     public function store(Request $request)
     {
-        //
-//        $errors = $this->newsService->validate($request);
-//        if(!empty($errors['message'])) {
-//            return response()->json(['status' => 'fail', 'message' => $errors['message']]);
-//        }
-      //  $user = auth('api')->user();
-       // Url::create(['name' => 'fdsfsd']);
+        $urls = $this->urlRepository->all();
+
+        $errors = $this->urlService->validate($request);
+
+        if(!empty($errors['message'])) {
+            return view('url.index', ['urls' => $urls , 'message' => $errors['message']]);
+          //  return response()->json(['status' => 'fail', 'message' => $errors['message']]);
+        }
+
+        var_dump($request->name);
+
+        $chars = preg_split("/\//", $request->name, -1, PREG_SPLIT_NO_EMPTY);
+        print_r($chars);
+
+        $url_start = $chars[0].'//'.$chars[1].'/';
+        $this->urlService->getUrl($url_start);
+
+        $id = DB::getPdo()->lastInsertId();
+        $url =  $this->urlRepository->getById($id);
 
 
-
-
-
-        $url = new Url;
-        $url->name = 'fdsfsd';
-
-        if ($url->save()) {
-            return view('url.index', ['urls' => Url::all() ]);
+        if (!empty($url)) {
+            return view('url.index', ['url' => $url,'urls' => $urls ]);
         } else {
-            return view('url.index', ['urls' => Url::all() , 'errors' => 'Url doesnt created']);
+            return view('url.index', ['urls' => $urls , 'message' => 'Url doesnt created']);
         }
     }
 

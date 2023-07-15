@@ -6,12 +6,35 @@
     <div class="container">
         <div class="row">
 
-           <!-- <a class="btn btn-primary" href="{#route('url.create')#}">Add url</a> -->
+            @if(isset ($message))
+                <div class="alert alert-warning" role="alert">
+                    <ul class="list-unstyled mb-0">
+                            <li>{{ $message }}</li>
+                    </ul>
+                </div>
+            @endif
 
             {{ Form::open(['method' => 'POST', 'route' =>['url.store']]) }}
+            {{Form::text('name', 'https://site/test') }}
             {{ Form::submit('Generate url', ['class' => 'btn btn-primary btn-lg']) }}
             {{ Form::close() }}
 
+                @if(isset ($url))
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">url</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">{{$url->id}}</th>
+                            <td>{{$url->name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                  @endif
 
 
             <table class="table">
@@ -25,25 +48,13 @@
                 @foreach($urls as $url)
                     <tr>
                         <th scope="row">   {{$url->id}}</th>
-                        <td>https://site/{{$url->name}}</td>
+                        <td>{{$url->name}}</td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
 
 
-            @foreach($urls as $url)
-                <h2>
-                    <a class="btn btn-outline-column" href="{{route('url.edit', $url->id) }}">
-                        <i class="fa fa-edit" style="font-size:36px"></i>
-                    </a>
-                    {{$url->id}}
-                     {{$url->name}}
-                    {{ Form::open(['method' => 'DELETE', 'route' =>['url.destroy', $url->id]]) }}
-                    {{ Form::submit('Delete url', ['class' => 'btn btn-danger btn-sm']) }}
-                    {{ Form::close() }}
-                </h2>
-            @endforeach
         </div>
     </div>
 @endsection
