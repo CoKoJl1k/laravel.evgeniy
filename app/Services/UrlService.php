@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UrlService {
 
-    public static array $letters = ['a','b','c','d'];
+    public static array $letters = ['a','b','c','d','e','f'];
     public UrlRepositoryInterface $urlRepository;
 
     public function __construct(UrlRepositoryInterface $urlRepository){

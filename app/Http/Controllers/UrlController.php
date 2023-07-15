@@ -44,6 +44,7 @@ class UrlController extends Controller
         $urls = $this->urlRepository->all();
 
         $errors = $this->urlService->validate($request);
+
         if(!empty($errors['message'])) {
             return view('url.index', ['urls' => $urls , 'message' => $errors['message']]);
         }
@@ -55,7 +56,6 @@ class UrlController extends Controller
 
         $id = DB::getPdo()->lastInsertId();
         $url =  $this->urlRepository->getById($id);
-
 
         if (!empty($url)) {
             return view('url.index', ['url' => $url,'urls' => $urls ]);

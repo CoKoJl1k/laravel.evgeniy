@@ -1,7 +1,5 @@
 @extends('home')
 
-
-
 @section('content')
     <div class="container">
         <div class="row">
@@ -16,26 +14,25 @@
 
             {{ Form::open(['method' => 'POST', 'route' =>['url.store']]) }}
             {{Form::text('name', 'https://site/test') }}
-            {{ Form::submit('Generate url', ['class' => 'btn btn-primary btn-lg']) }}
+            {{-- Form::submit('Сократить', ['class' => 'btn btn-primary btn-lg']) --}}
+            {{Form::button('Сократить',['class' => 'btn btn-primary btn-lg','onClick'=>'getUrl()']) }}
             {{ Form::close() }}
 
-                @if(isset ($url))
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">id</th>
-                        <th scope="col">url</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">{{$url->id}}</th>
-                            <td>{{$url->name}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                  @endif
-
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">url</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th id="url_id"></th>
+                    <td id="url_name"></td>
+                </tr>
+                </tbody>
+            </table>
+            <p id="msg"></p>
 
             <table class="table">
                 <thead>
@@ -53,8 +50,6 @@
                 @endforeach
                 </tbody>
             </table>
-
-
         </div>
     </div>
 @endsection
